@@ -4,13 +4,13 @@ class Disciplina {
     private $id;
     private $nome;
     private $cargaHoraria;
-    private $alunos; // Array de alunos
+    private $alunos; 
 
     public function __construct($id, $nome, $cargaHoraria) {
         $this->id = $id;
         $this->nome = $nome;
         $this->cargaHoraria = $cargaHoraria;
-        $this->alunos = []; // Inicializa o array de alunos
+        $this->alunos = []; 
     }
 
     public function getId() {

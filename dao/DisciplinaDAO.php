@@ -25,7 +25,7 @@ class DisciplinaDAO implements BaseDAO
         if ($row) {
             return new Disciplina($row['id'], $row['nome'], $row['carga_horaria']);
         }
-        return null; // Retorna null se não encontrar
+        return null; 
     }
 
     public function getAll()
@@ -84,7 +84,7 @@ class DisciplinaDAO implements BaseDAO
         if (!$result) return null;
 
         $disciplina = new Disciplina($result[0]['id'], $result[0]['nome'], $result[0]['carga_horaria']);
-        $disciplina->setAlunos([]); // Inicializa o array de alunos
+        $disciplina->setAlunos([]); 
 
         foreach ($result as $row) {
             $aluno = new Aluno($row['matricula'], $row['nome']);
@@ -111,7 +111,7 @@ class DisciplinaDAO implements BaseDAO
         return $professores;
     }
 
-    // Implementando o método read
+   
     public function read($id) {
         return $this->getById($id);
     }

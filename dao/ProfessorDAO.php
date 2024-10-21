@@ -20,7 +20,7 @@ class ProfessorDAO implements BaseDAO {
         if ($row) {
             return new Professor($row['id'], $row['nome'], $row['disciplina_id']);
         }
-        return null; // Retorna null se não encontrar
+        return null; 
     }
 
     public function getAll() {

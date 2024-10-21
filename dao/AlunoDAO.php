@@ -24,7 +24,7 @@ class AlunoDAO implements BaseDAO
         if ($row) {
             return new Aluno($row['matricula'], $row['nome']);
         }
-        return null; // Retorna null se não encontrar
+        return null; 
     }
 
     public function getAll()
@@ -86,7 +86,7 @@ class AlunoDAO implements BaseDAO
         if (!$result) return null;
 
         $aluno = new Aluno($result[0]['matricula'], $result[0]['nome']);
-        $aluno->setDisciplinas([]); // Inicializa o array de disciplinas
+        $aluno->setDisciplinas([]); 
 
         foreach ($result as $row) {
             if (isset($row['id'], $row['nome'])) {
