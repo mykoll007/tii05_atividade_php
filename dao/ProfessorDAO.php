@@ -3,7 +3,7 @@ require_once 'BaseDAO.php';
 require_once 'entity/Professor.php';
 require_once 'config/Database.php';
 
-class ProfessorDAO{
+class ProfessorDAO implements BaseDAO {
     private $db;
 
     public function __construct() {
@@ -17,7 +17,10 @@ class ProfessorDAO{
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new Professor($row['id'], $row['nome'], $row['disciplina_id']);
+        if ($row) {
+            return new Professor($row['id'], $row['nome'], $row['disciplina_id']);
+        }
+        return null; // Retorna null se não encontrar
     }
 
     public function getAll() {
@@ -31,18 +34,18 @@ class ProfessorDAO{
     }
 
     public function create($professor) {
-        $sql = "INSERT INTO Professor (nome, disciplinaID) VALUES (:nome, :disciplinaID)";
+        $sql = "INSERT INTO Professor (nome, disciplina_id) VALUES (:nome, :disciplina_id)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $professor->getNome());
-        $stmt->bindParam(':disciplinaID', $professor->getDisciplinaID());
+        $stmt->bindParam(':disciplina_id', $professor->getDisciplinaID());
         $stmt->execute();
     }
 
     public function update($professor) {
-        $sql = "UPDATE Professor SET nome = :nome, disciplinaID = :disciplinaID WHERE id = :id";
+        $sql = "UPDATE Professor SET nome = :nome, disciplina_id = :disciplina_id WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $professor->getNome());
-        $stmt->bindParam(':disciplinaID', $professor->getDisciplinaID());
+        $stmt->bindParam(':disciplina_id', $professor->getDisciplinaID());
         $stmt->bindParam(':id', $professor->getId());
         $stmt->execute();
     }
@@ -52,6 +55,9 @@ class ProfessorDAO{
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
+    }
+    public function read($id) {
+        return $this->getById($id);
     }
 }
 ?>

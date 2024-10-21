@@ -5,7 +5,7 @@ require_once 'entity/Aluno.php';
 require_once 'entity/Professor.php';
 require_once 'config/Database.php';
 
-class DisciplinaDAO
+class DisciplinaDAO implements BaseDAO
 {
     private $db;
 
@@ -22,7 +22,10 @@ class DisciplinaDAO
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new Disciplina($row['id'], $row['nome'], $row['carga_horaria']);
+        if ($row) {
+            return new Disciplina($row['id'], $row['nome'], $row['carga_horaria']);
+        }
+        return null; // Retorna null se não encontrar
     }
 
     public function getAll()
@@ -38,20 +41,18 @@ class DisciplinaDAO
 
     public function create($disciplina)
     {
-        $sql = "INSERT INTO Disciplina (nome, chave, carga_horaria) VALUES (:nome, :chave, :carga_horaria)";
+        $sql = "INSERT INTO Disciplina (nome, carga_horaria) VALUES (:nome, :carga_horaria)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $disciplina->getNome());
-        $stmt->bindParam(':chave', $disciplina->getChave());
         $stmt->bindParam(':carga_horaria', $disciplina->getCargaHoraria());
         $stmt->execute();
     }
 
     public function update($disciplina)
     {
-        $sql = "UPDATE Disciplina SET nome = :nome, chave = :chave, carga_horaria = :carga_horaria WHERE id = :id";
+        $sql = "UPDATE Disciplina SET nome = :nome, carga_horaria = :carga_horaria WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $disciplina->getNome());
-        $stmt->bindParam(':chave', $disciplina->getChave());
         $stmt->bindParam(':carga_horaria', $disciplina->getCargaHoraria());
         $stmt->bindParam(':id', $disciplina->getId());
         $stmt->execute();
@@ -65,20 +66,37 @@ class DisciplinaDAO
         $stmt->execute();
     }
 
-    // Método para obter disciplina com seus alunos
     public function getDisciplinaWithAlunos($disciplinaID)
     {
-        /*
-        Implemnte o retorno de uma disciplina, contendo seus respectivos alunos
-        */
+        $sql = "
+            SELECT disciplina.*, aluno.*
+            FROM disciplina
+            JOIN disciplina_aluno ON disciplina.id = disciplina_aluno.disciplina_id
+            JOIN aluno ON disciplina_aluno.aluno_id = aluno.matricula
+            WHERE disciplina.id = :disciplinaID
+        ";
 
-        return null;
-    }
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':disciplinaID', $disciplinaID);
+        $stmt->execute();
 
-    // Método para obter os professores da disciplina
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$result) return null;
+
+        $disciplina = new Disciplina($result[0]['id'], $result[0]['nome'], $result[0]['carga_horaria']);
+        $disciplina->setAlunos([]); // Inicializa o array de alunos
+
+        foreach ($result as $row) {
+            $aluno = new Aluno($row['matricula'], $row['nome']);
+            $disciplina->addAluno($aluno);
+        }
+
+        return $disciplina;
+    }    
+
     public function getProfessoresForDisciplina($disciplinaID)
     {
-        $sql = "SELECT p.id, p.nome, p.disciplina_id FROM professor p
+        $sql = "SELECT p.id, p.nome FROM professor p
             WHERE p.disciplina_id = :disciplinaID";
 
         $stmt = $this->db->prepare($sql);
@@ -87,9 +105,15 @@ class DisciplinaDAO
 
         $professores = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $professores[] = new Professor($row['id'], $row['nome'], $row['disciplina_id']);
+            $professores[] = new Professor($row['id'], $row['nome'], $disciplinaID);
         }
 
         return $professores;
     }
+
+    // Implementando o método read
+    public function read($id) {
+        return $this->getById($id);
+    }
 }
+?>

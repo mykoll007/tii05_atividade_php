@@ -2,12 +2,13 @@
 class Aluno {
     private $matricula;
     private $nome;
+    private $disciplinas;
    
-    // Implemente o array de discplinas que será utilizado pela entidade Aluno
 
     public function __construct($matricula, $nome) {
         $this->matricula = $matricula;
         $this->nome = $nome;
+        $this->disciplinas = [];
     }
 
     public function getMatricula() {
@@ -21,7 +22,28 @@ class Aluno {
     public function setNome($nome) {
         $this->nome = $nome;
     }
+    public function getDisciplinas() {
+        return $this->disciplinas;
+    }
 
-    // Implemente os getters e setters para as ler e inserir um array de discplinas no objeto aluno
+
+    public function setDisciplinas(array $disciplinas) {
+        $this->disciplinas = $disciplinas;
+    }
+
+    public function addDisciplina($disciplina) {
+        $this->disciplinas[] = $disciplina;
+    }
+    
+    public function removeDisciplina($disciplinaId) {
+        foreach ($this->disciplinas as $key => $disciplina) {
+            if ($disciplina->getId() === $disciplinaId) {
+                unset($this->disciplinas[$key]);
+                return true; 
+            }
+        }
+        return false; 
+    }
+
 }
 ?>

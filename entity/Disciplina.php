@@ -4,12 +4,13 @@ class Disciplina {
     private $id;
     private $nome;
     private $cargaHoraria;
-    // Implemente o array de alunos que será utilizado pela entidade Disciplina
+    private $alunos; // Array de alunos
 
     public function __construct($id, $nome, $cargaHoraria) {
         $this->id = $id;
         $this->nome = $nome;
         $this->cargaHoraria = $cargaHoraria;
+        $this->alunos = []; // Inicializa o array de alunos
     }
 
     public function getId() {
@@ -32,6 +33,26 @@ class Disciplina {
         $this->cargaHoraria = $cargaHoraria;
     }
 
-    // Implemente os getters e setters para as ler e inserir um array de alunos no objeto discplina
+    public function getAlunos() {
+        return $this->alunos;
+    }
+
+    public function setAlunos(array $alunos) {
+        $this->alunos = $alunos;
+    }
+
+    public function addAluno($aluno) {
+        $this->alunos[] = $aluno;
+    }
+
+    public function removeAluno($matricula) {
+        foreach ($this->alunos as $key => $aluno) {
+            if ($aluno->getMatricula() === $matricula) {
+                unset($this->alunos[$key]);
+                return true; 
+            }
+        }
+        return false; 
+    }
 }
 ?>
