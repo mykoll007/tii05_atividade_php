@@ -67,32 +67,34 @@ class DisciplinaDAO implements BaseDAO
     }
 
     public function getDisciplinaWithAlunos($disciplinaID)
-    {
-        $sql = "
-            SELECT disciplina.*, aluno.*
-            FROM disciplina
-            JOIN disciplina_aluno ON disciplina.id = disciplina_aluno.disciplina_id
-            JOIN aluno ON disciplina_aluno.aluno_id = aluno.matricula
-            WHERE disciplina.id = :disciplinaID
-        ";
+{
+    $sql = "
+        SELECT disciplina.id as disciplina_id, disciplina.nome as disciplina_nome, disciplina.carga_horaria,
+               aluno.matricula, aluno.nome as aluno_nome
+        FROM disciplina
+        JOIN disciplina_aluno ON disciplina.id = disciplina_aluno.disciplina_id
+        JOIN aluno ON disciplina_aluno.aluno_id = aluno.matricula
+        WHERE disciplina.id = :disciplinaID
+    ";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':disciplinaID', $disciplinaID);
-        $stmt->execute();
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':disciplinaID', $disciplinaID);
+    $stmt->execute();
 
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (!$result) return null;
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!$result) return null;
 
-        $disciplina = new Disciplina($result[0]['id'], $result[0]['nome'], $result[0]['carga_horaria']);
-        $disciplina->setAlunos([]); 
+    $disciplina = new Disciplina($result[0]['disciplina_id'], $result[0]['disciplina_nome'], $result[0]['carga_horaria']);
+    $disciplina->setAlunos([]);
 
-        foreach ($result as $row) {
-            $aluno = new Aluno($row['matricula'], $row['nome']);
-            $disciplina->addAluno($aluno);
-        }
+    foreach ($result as $row) {
+        $aluno = new Aluno($row['matricula'], $row['aluno_nome']);
+        $disciplina->addAluno($aluno);
+    }
 
-        return $disciplina;
-    }    
+    return $disciplina;
+}
+
 
     public function getProfessoresForDisciplina($disciplinaID)
     {

@@ -71,30 +71,31 @@ class AlunoDAO implements BaseDAO
     public function getAlunoWithDisciplinas($alunoID)
     {
         $sql = "
-            SELECT aluno.*, disciplina.*
+            SELECT aluno.matricula, aluno.nome as aluno_nome, 
+                   disciplina.id as disciplina_id, disciplina.nome as disciplina_nome, disciplina.carga_horaria
             FROM aluno
             JOIN disciplina_aluno ON aluno.matricula = disciplina_aluno.aluno_id
             JOIN disciplina ON disciplina_aluno.disciplina_id = disciplina.id
             WHERE aluno.matricula = :alunoID
         ";
-
+    
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':alunoID', $alunoID);
         $stmt->execute();
-
+    
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if (!$result) return null;
-
-        $aluno = new Aluno($result[0]['matricula'], $result[0]['nome']);
-        $aluno->setDisciplinas([]); 
-
+    
+        $aluno = new Aluno($result[0]['matricula'], $result[0]['aluno_nome']);
+        $aluno->setDisciplinas([]);
+    
         foreach ($result as $row) {
-            if (isset($row['id'], $row['nome'])) {
-                $disciplina = new Disciplina($row['id'], $row['nome'], $row['carga_horaria'] ?? null);
+            if (isset($row['disciplina_id'], $row['disciplina_nome'])) {
+                $disciplina = new Disciplina($row['disciplina_id'], $row['disciplina_nome'], $row['carga_horaria'] ?? null);
                 $aluno->addDisciplina($disciplina);
             }
         }
-
+    
         return $aluno;
     }    
 }
