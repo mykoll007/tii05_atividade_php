@@ -25,10 +25,8 @@ class Aluno {
     public function getDisciplinas() {
         return $this->disciplinas;
     }
-
-
-    public function setDisciplinas(array $disciplinas) {
-        $this->disciplinas = $disciplinas;
+    public function setDisciplinas($disciplina) {
+        $this->disciplinas[] = $disciplina;
     }
 
     public function addDisciplina($disciplina) {
