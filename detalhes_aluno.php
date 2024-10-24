@@ -20,17 +20,18 @@ if ($alunoID) {
     <title>Detalhes do Aluno</title>
 </head>
 <body>
-    <h1>Detalhes do Aluno</h1>
+<h1>Detalhes do Aluno</h1>
 
-    <p><strong>Matrícula:</strong> <?= $aluno->getMatricula(); ?></p>
-    <p><strong>Nome:</strong> <?= $aluno->getNome(); ?></p>
+<p><strong>Matrícula:</strong> <?= $aluno->getMatricula(); ?></p>
+<p><strong>Nome:</strong> <?= $aluno->getNome(); ?></p>
 
-    <h2>Disciplinas Matriculadas</h2>
-    <ul>
-        <?php foreach ($aluno->getDisciplinas() as $disciplina): ?>
-            <li><?= $disciplina->getNome(); ?> - <?= $disciplina->getCargaHoraria(); ?> horas</li>
-        <?php endforeach; ?>
-    </ul>
+<h2>Disciplinas Matriculadas</h2>
+<ul>
+    <?php foreach ($aluno->getDisciplinas() as $disciplina): ?>
+        <li><?= $disciplina->getNome(); ?> - <?= $disciplina->getCargaHoraria(); ?> horas</li>
+    <?php endforeach; ?>
+</ul>
+
 
     <a href="index.php">Voltar</a>
 </body>

@@ -37,10 +37,6 @@ class Disciplina {
         return $this->alunos;
     }
 
-    public function setAlunos(array $alunos) {
-        $this->alunos = $alunos;
-    }
-
     public function addAluno($aluno) {
         $this->alunos[] = $aluno;
     }

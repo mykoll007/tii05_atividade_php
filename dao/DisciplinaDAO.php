@@ -85,7 +85,7 @@ class DisciplinaDAO implements BaseDAO
     if (!$result) return null;
 
     $disciplina = new Disciplina($result[0]['disciplina_id'], $result[0]['disciplina_nome'], $result[0]['carga_horaria']);
-    $disciplina->setAlunos([]);
+
 
     foreach ($result as $row) {
         $aluno = new Aluno($row['matricula'], $row['aluno_nome']);
